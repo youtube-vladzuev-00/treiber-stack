@@ -2,7 +2,7 @@ public final class ConcurrentStack<T> {
     private volatile Node<T> head;
 
     public void push(final T element) {
-        throw new UnsupportedOperationException();
+        head = new Node<>(element, head);
     }
 
     public T pop() {
