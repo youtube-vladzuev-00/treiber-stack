@@ -1,8 +1,16 @@
+import java.util.concurrent.atomic.AtomicReference;
+
 public final class ConcurrentStack<T> {
-    private volatile Node<T> head;
+    private final AtomicReference<Node<T>> head = new AtomicReference<>();
 
     public void push(final T element) {
-        head = new Node<>(element, head);
+        while (true) {
+            final Node<T> previousHead = head.get();
+            final Node<T> newNode = new Node<>(element, previousHead);
+            if (head.compareAndSet(previousHead, newNode)) {
+                return;
+            }
+        }
     }
 
     public T pop() {
