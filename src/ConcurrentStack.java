@@ -1,4 +1,7 @@
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static java.util.Optional.empty;
 
 public final class ConcurrentStack<T> {
     private final AtomicReference<Node<T>> head = new AtomicReference<>();
@@ -13,11 +16,14 @@ public final class ConcurrentStack<T> {
         }
     }
 
-    public T pop() {
+    public Optional<T> pop() {
         while (true) {
             final Node<T> previousHead = head.get();
+            if (previousHead == null) {
+                return empty();
+            }
             if (head.compareAndSet(previousHead, previousHead.next)) {
-                return previousHead.value;
+                return Optional.of(previousHead.value);
             }
         }
     }
