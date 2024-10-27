@@ -14,9 +14,12 @@ public final class ConcurrentStack<T> {
     }
 
     public T pop() {
-        final Node<T> previousHead = head.get();
-        head.set(previousHead.next);
-        return previousHead.value;
+        while (true) {
+            final Node<T> previousHead = head.get();
+            if (head.compareAndSet(previousHead, previousHead.next)) {
+                return previousHead.value;
+            }
+        }
     }
 
     private static final class Node<T> {
