@@ -14,7 +14,9 @@ public final class ConcurrentStack<T> {
     }
 
     public T pop() {
-        throw new UnsupportedOperationException();
+        final Node<T> previousHead = head.get();
+        head.set(previousHead.next);
+        return previousHead.value;
     }
 
     private static final class Node<T> {
